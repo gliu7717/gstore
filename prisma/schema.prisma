@@ -32,10 +32,13 @@ model Product{
 
 model User {
   id            String          @id @default(uuid())
-  name          String?
+  name          String          @default("NO_NAME")
   email         String          @unique
   emailVerified DateTime?
   image         String?
+  password      String?
+  role          String @default("user")
+  paymentMethod String?
   accounts      Account[]
   sessions      Session[]
   // Optional for WebAuthn support
