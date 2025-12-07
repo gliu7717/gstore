@@ -1,12 +1,13 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { Product } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 // convert prism object to regualar js object
-export function convertToPlainObject<T>(value:T ):T{
+export function convertToPlainObject<T>(value:T ):Product[]{
   return JSON.parse(JSON.stringify(value))
 }
 
