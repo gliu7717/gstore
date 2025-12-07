@@ -3,6 +3,7 @@ import { getProductBySlug } from "@/lib/actions/product.actions";
 import { Badge } from "@/components/ui/badge";
 import {Card,CardContent} from '@/components/ui/card'
 import ProductPrice from "@/components/shared/header/product/product-price";
+import { Button } from "@/components/ui/button";
 
 const ProductDetailsPage = async (props:{
     params: Promise<{slug:string}>;
@@ -44,6 +45,19 @@ const ProductDetailsPage = async (props:{
                             <div>Price</div>
                             <div><ProductPrice value={Number(product.price)}/></div>
                         </div>
+                        <div className="mb-2 flex justify-between">
+                            <div>Status</div>
+                            {product.stock> 0? (
+                                <Badge variant='outline'>In Stock</Badge>
+                            ):(
+                                <Badge variant='destructive'>Out of Stock</Badge>
+                            )}
+                        </div>
+                        {product.stock> 0 && (
+                            <div className="flex-center">
+                                <Button className="w-full">Add To Cart</Button>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
