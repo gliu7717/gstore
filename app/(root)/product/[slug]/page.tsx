@@ -34,8 +34,18 @@ const ProductDetailsPage = async (props:{
                     </p>
                      <p>{product.description}</p>
                     </div>
-
-                </div>
+                </div>                
+            </div>
+            {/* Action Column */}
+            <div>
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="mb-2 flex justify-between">
+                            <div>Price</div>
+                            <div><ProductPrice value={Number(product.price)}/></div>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
         </div>
