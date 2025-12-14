@@ -8,48 +8,53 @@ import Link from "next/link";
 import { signInWithCredentials } from "@/lib/actions/user.actions";
 import { useActionState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
+import { useSearchParams } from "next/navigation";
 
 const CredentialsSignInForm = () => {
-    const [data, action] = useActionState(signInWithCredentials,{
-        success:false,
-        message:''
+    const [data, action] = useActionState(signInWithCredentials, {
+        success: false,
+        message: ''
     })
-    const SignInButton =() =>{
-        const {pending} = useFormStatus()
-        return(
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl') || '/';
+
+    const SignInButton = () => {
+        const { pending } = useFormStatus()
+        return (
             <Button disabled={pending} className="w-full" variant='default' >
-                {pending? 'Signing...': 'Sign in'}
+                {pending ? 'Signing...' : 'Sign in'}
             </Button>
         )
     }
-    return ( <form action={action}>
+    return (<form action={action}>
+        <input type="hidden" name='calbackUrl' value={callbackUrl} />
         <div className="space-y-6">
             <div>
                 <Label htmlFor='email'>Email</Label>
-                <Input id='email' name='email' 
-                type='email' required autoComplete="email" 
-                defaultValue={signInDefaultValues.email}/>
+                <Input id='email' name='email'
+                    type='email' required autoComplete="email"
+                    defaultValue={signInDefaultValues.email} />
             </div>
             <div>
                 <Label htmlFor='password'>Password</Label>
-                <Input id='password' name='password' 
-                type='password' required autoComplete="password" 
-                defaultValue={signInDefaultValues.password}/>
+                <Input id='password' name='password'
+                    type='password' required autoComplete="password"
+                    defaultValue={signInDefaultValues.password} />
             </div>
             <div>
-                <SignInButton/>
+                <SignInButton />
             </div>
-            { data && !data.success && (
+            {data && !data.success && (
                 <div className="text-center text-destructive">{data.message}</div>
             )}
             <div className="text-sm text-center text-muted-forground">
                 Don&apos;t have an account?{' '}
                 <Link href='/sign-up' target='_self' className='link'>
-                Sign Up
+                    Sign Up
                 </Link>
             </div>
         </div>
-    </form> );
+    </form>);
 }
- 
+
 export default CredentialsSignInForm;
