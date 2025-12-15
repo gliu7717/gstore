@@ -20,8 +20,17 @@ export async function signInWithCredentials(preState: unknown, formData: FormDat
     }
 }
 
-// Sign use out
-export async function signOutUser() {
-    console.log("signing out....")
-    await signOut();
+// Sign user out
+export async function signOutUser(preState: unknown, formData: FormData) {
+    try {
+        await signOut();
+
+        return { success: true, message: 'Signed in successfully' }
+    } catch (error) {
+
+        if (isRedirectError(error)) {
+            throw error
+        }
+        return { success: false, message: 'Invalid email or password' }
+    }
 }
