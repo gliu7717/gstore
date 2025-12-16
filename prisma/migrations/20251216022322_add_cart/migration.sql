@@ -21,10 +21,13 @@ CREATE TABLE "Product" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "name" TEXT,
+    "name" TEXT NOT NULL DEFAULT 'NO_NAME',
     "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
+    "password" TEXT,
+    "role" TEXT NOT NULL DEFAULT 'user',
+    "paymentMethod" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -68,6 +71,19 @@ CREATE TABLE "VerificationToken" (
     CONSTRAINT "VerificationToken_pkey" PRIMARY KEY ("identifier","token")
 );
 
+-- CreateTable
+CREATE TABLE "Cart" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "sessionCartId" TEXT NOT NULL,
+    "items" JSON[] DEFAULT ARRAY[]::JSON[],
+    "itemsPrice" DECIMAL(12,2) NOT NULL,
+    "totalPrice" DECIMAL(12,2) NOT NULL,
+    "shippingPrice" DECIMAL(12,2) NOT NULL,
+    "taxPrice" DECIMAL(12,2) NOT NULL,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "product_slug_idx" ON "Product"("slug");
 
@@ -77,8 +93,14 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Cart_id_key" ON "Cart"("id");
+
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Cart" ADD CONSTRAINT "Cart_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
