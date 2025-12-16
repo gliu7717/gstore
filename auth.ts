@@ -5,6 +5,8 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { compareSync } from 'bcrypt-ts-edge'
 import type { NextAuthConfig } from 'next-auth'
 import { CredentialsSignin } from "next-auth"
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 
 class InvalidLoginError extends CredentialsSignin {
     code = "Invalid identifier or password"
@@ -85,6 +87,28 @@ export const config = {
                 }
             }
             return token
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        authorized({ request, auth }: any) {
+            // check for session cart coookie
+            if (!request.cookies.get('sessionCartId')) {
+                // generate new session cart id cookie
+                const sessionCardId = crypto.randomUUID()
+                console.log(sessionCardId)
+                // clone the req headers
+                const newRequestHeaders = new Headers(request.headers)
+                // create new response and add the new headers
+                const response = NextResponse.next({
+                    request: {
+                        headers: newRequestHeaders,
+                    }
+                })
+                response.cookies.set('sessionCartId', sessionCardId)
+                return response;
+            }
+            else {
+                return true
+            }
         }
 
     }
