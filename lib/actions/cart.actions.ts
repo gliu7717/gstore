@@ -45,18 +45,22 @@ export async function addItemToCart(data: CartItem) {
                 userId: userId,
                 items: [item],
                 sessionCartId: sessionCardId,
-                ...calcPrice([item])
+                ...calcPrice([item]),
+                user: null
             })
             console.log(newCart)
             await prisma.cart.create({
                 data: newCart
             })
+
             // revalidate product page
             revalidatePath(`/product/${product.slug}`)
             return {
                 success: true,
                 message: 'Item added to cart'
             }
+        } else {
+
         }
 
     } catch (error) {

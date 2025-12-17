@@ -76,7 +76,7 @@ CREATE TABLE "VerificationToken" (
 -- CreateTable
 CREATE TABLE "Cart" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
     "sessionCartId" TEXT NOT NULL,
     "items" JSON[] DEFAULT ARRAY[]::JSON[],
     "itemsPrice" DECIMAL(12,2) NOT NULL,
