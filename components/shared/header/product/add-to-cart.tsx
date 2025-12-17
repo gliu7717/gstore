@@ -19,7 +19,7 @@ const AddToCart = ({ item }: { item: CartItem }) => {
         // handle success add to cart
         console.log(`${item.name} added to cart`)
         toast("Event has been created", {
-            description: `${item.name} added to cart`,
+            description: res.message,
             action: {
                 label: "Go To Cart",
                 onClick: () => router.push('/cart'),

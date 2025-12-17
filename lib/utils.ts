@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // convert prism object to regualar js object
-export function convertToPlainObject<T>(value: T): Product[] {
+export function convertToPlainObject<T>(value: T): T {
   return JSON.parse(JSON.stringify(value))
 }
 

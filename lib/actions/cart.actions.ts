@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { cartItemSchema, insertCartSchema } from "../validators";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@/generated/prisma/client";
 // Calculating cart prices
 const calcPrice = (items: CartItem[]) => {
     const itemsPrice = round2(
@@ -31,6 +32,7 @@ export async function addItemToCart(data: CartItem) {
         const session = await auth();
         const userId = session?.user?.id ? (session.user.id as string) : undefined;
         const cart = await getMyCart();
+
         // parse and validate item
         const item = cartItemSchema.parse(data)
 
@@ -57,9 +59,39 @@ export async function addItemToCart(data: CartItem) {
             revalidatePath(`/product/${product.slug}`)
             return {
                 success: true,
-                message: 'Item added to cart'
+                message: `${product.name} added to cart`
             }
         } else {
+            // check if the item is already in the cart
+
+            const existItem = (cart.items as CartItem[]).find((x) => x.productId === item.productId)
+            if (existItem) {
+                // check stock
+                if (product.stock < existItem.qty + 1) {
+                    throw new Error('Not enough stock')
+
+                }
+                // increase the quantity
+                (cart.items as CartItem[]).find((x) => x.productId === item.productId)!.qty = existItem.qty + 1
+            } else {
+                // item does not exist in cart
+                //check stock
+                if (product.stock < 1) throw new Error('Not enought stock')
+                // add item to cart.items
+                cart.items.push(item)
+            }
+            await prisma.cart.update({
+                where: { id: cart.id },
+                data: {
+                    items: cart.items as Prisma.CartUpdateitemsInput[],
+                    ...calcPrice(cart.items as CartItem[])
+                }
+            })
+            revalidatePath(`/products/${product.slug}`)
+            return {
+                success: true,
+                message: `${product.name} ${existItem ? 'updated in' : 'added to'} cart`
+            }
 
         }
 
@@ -83,6 +115,7 @@ export async function getMyCart() {
         where: userId ? { userId: userId } : { sessionCartId: sessionCardId }
     })
     if (!cart) return undefined
+
     return convertToPlainObject({
         ...cart,
         items: cart.items as CartItem[],
