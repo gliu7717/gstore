@@ -11,9 +11,9 @@ const AddToCart = ({ item }: { item: CartItem }) => {
 
     const handleAddToCart = async () => {
         const res = await addItemToCart(item)
-        if (!res.success) {
-            console.log(res.message)
-            toast(res.message)
+        if (!res?.success) {
+            console.log(res?.message)
+            toast(res?.message)
             return;
         }
         // handle success add to cart
