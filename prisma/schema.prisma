@@ -39,6 +39,7 @@ model User {
   image         String?
   password      String?
   role          String    @default("user")
+  address       Json?     @db.Json
   paymentMethod String?
   accounts      Account[]
   sessions      Session[]
