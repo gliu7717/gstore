@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { formatNumberwithDecimal } from './utils'
+import { PAYMENT_METHODS } from './constants'
 // schema for inserting products
 const currency = z.string().refine((value) => /^\d+(\.\d{2})?$/.test(formatNumberwithDecimal(Number(value))), 'Price must have exactly two decimal places')
 export const insertProductSchema = z.object({
@@ -60,4 +61,12 @@ export const shippingAddressSchema = z.object({
     country: z.string().min(3, 'Country must be at least 3 characters'),
     lat: z.number().optional(),
     lng: z.number().optional(),
+})
+
+// Schema for payment method
+export const paymentMethodSchema = z.object({
+    type: z.string().min(1, 'Payment method is required')
+}).refine((data) => PAYMENT_METHODS.includes(data.type), {
+    path: ['type'],
+    message: 'Invalid payment method'
 })
