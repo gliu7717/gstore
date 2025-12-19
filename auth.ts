@@ -7,6 +7,7 @@ import type { NextAuthConfig } from 'next-auth'
 import { CredentialsSignin } from "next-auth"
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { Cookie } from 'next/font/google'
 
 class InvalidLoginError extends CredentialsSignin {
     code = "Invalid identifier or password"
@@ -76,6 +77,7 @@ export const config = {
         async jwt({ token, user, trigger, session }: any) {
             // assgin user fields to the token.
             if (user) {
+                token.id = user.id;
                 token.role = user.role;
                 // if user has no name use the email
                 if (user.name === "NO_NAME") {
@@ -84,6 +86,26 @@ export const config = {
                         where: { id: user.id },
                         data: { name: token.name }
                     })
+                }
+                if (trigger === 'signIn' || trigger === 'signUp') {
+                    const cookiesObject = await cookies();
+                    const sessionCardId = cookiesObject.get('sessionCartId')?.value;
+                    if (sessionCardId) {
+                        const sessionCard = await prisma.cart.findFirst({
+                            where: { sessionCartId: sessionCardId }
+                        })
+                        if (sessionCard) {
+                            // delte current user cart
+                            await prisma.cart.deleteMany({
+                                where: { userId: user.id },
+                            })
+                            // assign new cart
+                            await prisma.cart.update({
+                                where: { id: sessionCard.id },
+                                data: { userId: user.id }
+                            })
+                        }
+                    }
                 }
             }
             return token
