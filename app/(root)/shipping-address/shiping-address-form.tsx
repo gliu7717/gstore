@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ControllerRenderProps, useForm } from 'react-hook-form'
+import { ControllerRenderProps, useForm, SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
 import { ShippingAddress } from "@/types";
 import { shippingAddressSchema } from "@/lib/validators";
@@ -11,6 +11,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader } from "lucide-react";
+import { updateUserAddress } from "@/lib/actions/user.actions";
+import { toast } from "sonner";
+
+
 const ShippingAddressForm = ({ address }: { address: ShippingAddress }) => {
     const router = useRouter();
     const form = useForm<z.infer<typeof shippingAddressSchema>>({
@@ -20,9 +24,18 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress }) => {
     const [isPending, startTransition] = useTransition();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onSubmit = (value: any) => {
-        console.log(value);
-        return;
+    const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = async (values) => {
+        console.log(values);
+        startTransition(async () => {
+            const res = await updateUserAddress(values)
+            if (!res.success) {
+                toast("Event has been created", {
+                    description: res.message,
+                })
+                return;
+            }
+            router.push('/payment-method');
+        })
     }
 
     return <>
