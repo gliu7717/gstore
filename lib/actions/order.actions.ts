@@ -15,6 +15,7 @@ import { redirect } from "next/dist/server/api-utils";
 export async function CreateOrder() {
     try {
         const session = await auth();
+
         if (!session) throw new Error('User is not authenticated');
         const cart = await getMyCart();
         const userId = session?.user?.id;
@@ -34,11 +35,12 @@ export async function CreateOrder() {
             userId: user.id,
             shippingAddress: user.address,
             paymentMethod: user.paymentMethod,
-            itemPrice: cart.itemPrice,
-            shippPrice: cart.shippingPrice,
+            itemsPrice: cart.itemsPrice,
+            shippingPrice: cart.shippingPrice,
             taxPrice: cart.taxPrice,
             totalPrice: cart.totalPrice
         })
+        console.log("ready to insert order.")
         //Create a transaction to create order and order items in database
         const insertedOrderId = await prisma.$transaction(async (tx) => {
             const insertedOrder = await tx.order.create({
@@ -70,6 +72,7 @@ export async function CreateOrder() {
         if (!insertedOrderId) throw new Error('Order not created');
         return { success: true, message: 'Order created', redirectTo: `/order/${insertedOrderId}` }
     } catch (error) {
+        console.log("got error:" + error)
         if (isRedirectError(error)) throw error;
         return { success: false, message: formatError(error) };
     }
