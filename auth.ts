@@ -125,7 +125,7 @@ export const config = {
             // get pathname from the req URL Object
             const { pathname } = request.nextUrl;
             // if user is not authenticated and accessing a protested path
-            if (!auth && protectedPaths.some((p) => pathname.test(pathname))) return false;
+            if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
 
             // check for session cart coookie
             if (!request.cookies.get('sessionCartId')) {
