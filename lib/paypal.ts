@@ -1,6 +1,6 @@
-import { Currency } from "lucide-react";
 
-const base = 'https://api-m.sandbox.paypal.com'
+const base = process.env.PAYPAL_API_URL || 'https://api-m.sandbox.paypal.com';
+
 export const paypal = {
     createOrder: async function createOrder(price: number) {
         const accessToken = await generateAccessToken();
@@ -8,7 +8,7 @@ export const paypal = {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Conent-Type': 'application/json',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${accessToken}`
             },
             body: JSON.stringify({
