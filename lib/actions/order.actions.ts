@@ -147,15 +147,19 @@ export async function approvePayPalOrder(
 
         if (!order) throw new Error('Order not found');
 
+        console.log(data.orderID);
         const captureData = await paypal.capturePayment(data.orderID);
+        console.log("capturePayment error ");
 
         if (
             !captureData ||
             captureData.id !== (order.paymentResult as PaymentResult)?.id ||
             captureData.status !== 'COMPLETED'
         ) {
+            console.log("error in paypal payment")
             throw new Error('Error in PayPal payment');
         }
+        console.log("passed capturePayment");
 
         // Update order to paid
         await updateOrderToPaid({
@@ -176,6 +180,7 @@ export async function approvePayPalOrder(
             message: 'Your order has been paid',
         };
     } catch (error) {
+        console.log("got error" + error)
         return { success: false, message: formatError(error) };
     }
 }
