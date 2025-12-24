@@ -2,7 +2,7 @@
 import { Order } from "@/types";
 import { getOrderById } from "@/lib/actions/order.actions";
 import { notFound } from "next/navigation";
-import { FormatCurrency, formatDateTime, formatId } from "@/lib/utils";
+import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -138,19 +138,19 @@ const OrderDetailsTable = ({ order, paypalClientId }: { order: Order, paypalClie
                     <CardContent className="p-4 gap-5 space-y-4">
                         <div className="flex justify-between">
                             <div>Items</div>
-                            <div>{FormatCurrency(itemsPrice)}</div>
+                            <div>{formatCurrency(itemsPrice)}</div>
                         </div>
                         <div className="flex justify-between">
                             <div>Tax</div>
-                            <div>{FormatCurrency(taxPrice)}</div>
+                            <div>{formatCurrency(taxPrice)}</div>
                         </div>
                         <div className="flex justify-between">
                             <div>Shipping</div>
-                            <div>{FormatCurrency(shippingPrice)}</div>
+                            <div>{formatCurrency(shippingPrice)}</div>
                         </div>
                         <div className="flex justify-between">
                             <div>Total</div>
-                            <div>{FormatCurrency(totalPrice)}</div>
+                            <div>{formatCurrency(totalPrice)}</div>
                         </div>
 
                         {/* PayPal Payment */}

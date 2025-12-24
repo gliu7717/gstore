@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Table, TableBody, TableHead, TableCell, TableRow, TableHeader } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner"
-import { FormatCurrency } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from '@/components/ui/card'
 
 const CartTable = ({ cart }: { cart?: Cart }) => {
@@ -86,7 +86,7 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                     <CardContent className="p4 gap-4">
                         <div className="pb-3 text xl">
                             Subtotal({cart.items.reduce((a, c) => a + c.qty, 0)}):
-                            <span className="font-bold">{FormatCurrency(cart.itemsPrice)}</span>
+                            <span className="font-bold">{formatCurrency(cart.itemsPrice)}</span>
                         </div>
                         <Button className="w-full" disabled={isPending} onClick={() => startTransition(() => router.push('/shipping-address'))}>
                             {isPending ? (<Loader className="w-4 h-4 animate-spin" />) :
