@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { formatNumberwithDecimal } from './utils'
 import { PAYMENT_METHODS } from './constants'
-import ProductCard from '@/components/shared/header/product/product-card'
 // schema for inserting products
 const currency = z.string().refine((value) => /^\d+(\.\d{2})?$/.test(formatNumberwithDecimal(Number(value))), 'Price must have exactly two decimal places')
 export const insertProductSchema = z.object({
@@ -10,16 +9,18 @@ export const insertProductSchema = z.object({
     category: z.string().min(3, 'Category must be at least 3 charcters'),
     brand: z.string().min(3, 'Brand must be at least 3 charcters'),
     description: z.string().min(3, 'Description must be at least 3 charcters'),
-    stock: z.coerce.number(),
+    stock: z.number().int(),
     images: z.array(z.string()).min(1, 'Product must have at least 1 image'),
     isFeatured: z.boolean(),
     banner: z.string().nullable(),
     price: currency,
 })
 // Schema for updating products
+
 export const updateProductSchema = insertProductSchema.extend({
     id: z.string().min(1, 'Id is required'),
 });
+
 
 // Schema for signing users in
 export const signInFormSchema = z.object({
