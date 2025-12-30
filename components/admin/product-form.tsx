@@ -327,8 +327,6 @@ const ProductForm = ({
                             )}
                         </CardContent>
                     </Card>
-
-
                 </div>
                 <div>
                     {/* Description */}
