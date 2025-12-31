@@ -3,7 +3,7 @@ import { insertProductSchema, insertCartSchema, cartItemSchema, shippingAddressS
 
 export type Product = z.infer<typeof insertProductSchema> & {
     id: string;
-    rating: number;
+    rating: string;
     createdAt: Date;
 }
 export type Cart = z.infer<typeof insertCartSchema>;
