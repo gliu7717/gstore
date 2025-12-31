@@ -38,5 +38,11 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "plugins": [
+    // ... other LSPs (if any) and as last
+    {
+      "name": "@effect/language-service"
+    }
   ]
 }
