@@ -4,7 +4,6 @@ import {
     getAllProducts,
     getAllCategories,
 } from '@/lib/actions/product.actions';
-import { Product } from '@/types';
 import Link from 'next/link';
 
 const prices = [
@@ -30,6 +29,7 @@ const prices = [
     },
 ];
 
+const ratings = [4, 3, 2, 1];
 
 const SearchPage = async (props: {
     searchParams: Promise<{
@@ -138,17 +138,54 @@ const SearchPage = async (props: {
                         ))}
                     </ul>
                 </div>
+                {/* Rating Links */}
+                <div className='text-xl mb-2 mt-8'>Customer Ratings</div>
+                <div>
+                    <ul className='space-y-1'>
+                        <li>
+                            <Link
+                                className={`${rating === 'all' && 'font-bold'}`}
+                                href={getFilterUrl({ r: 'all' })}
+                            >
+                                Any
+                            </Link>
+                        </li>
+                        {ratings.map((r) => (
+                            <li key={r}>
+                                <Link
+                                    className={`${rating === r.toString() && 'font-bold'}`}
+                                    href={getFilterUrl({ r: `${r}` })}
+                                >
+                                    {`${r} stars & up`}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
             <div className='md:col-span-4 space-y-4'>
                 <div className='flex-between flex-col md:flex-row my-4'>
                     <div className='flex items-center'>
+                        {q !== 'all' && q !== '' && 'Query: ' + q}
+                        {category !== 'all' && category !== '' && 'Category: ' + category}
+                        {price !== 'all' && ' Price: ' + price}
+                        {rating !== 'all' && ' Rating: ' + rating + ' stars & up'}
+                        &nbsp;
+                        {(q !== 'all' && q !== '') ||
+                            (category !== 'all' && category !== '') ||
+                            rating !== 'all' ||
+                            price !== 'all' ? (
+                            <Button variant={'link'} asChild>
+                                <Link href='/search'>Clear</Link>
+                            </Button>
+                        ) : null}
                     </div>
-                    <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-                        {products.data.length === 0 && <div>No products found</div>}
-                        {products.data.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                </div>
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+                    {products.data.length === 0 && <div>No products found</div>}
+                    {products.data.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
                 </div>
             </div>
         </div>
