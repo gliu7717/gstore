@@ -1,18 +1,20 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { Review } from '@/types';
-import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect } from "react";
+import { Review } from "@/types";
+import Link from "next/link";
+import { useState } from "react";
+import ReviewForm from "./review-form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Calendar, User } from 'lucide-react';
-import { formatDateTime } from '@/lib/utils';
+} from "@/components/ui/card";
+import { Calendar, User } from "lucide-react";
+import { formatDateTime } from "@/lib/utils";
+import { getReviews } from "@/lib/actions/review.actions";
 
 const ReviewList = ({
   userId,
@@ -25,13 +27,30 @@ const ReviewList = ({
 }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
 
+  useEffect(() => {
+    const loadReviews = async () => {
+      const res = await getReviews({ productId });
+      setReviews(res.data);
+    };
+
+    loadReviews();
+  }, [productId]);
+
+  // Reload reviews after created or updated
+  const reload = async () => {
+    const res = await getReviews({ productId });
+    setReviews([...res.data]);
+  };
+
   return (
     <div className='space-y-4'>
       {reviews.length === 0 && <div>No reviews yet</div>}
       {userId ? (
-        <>
-        {/* Review Form */}
-        </>
+        <ReviewForm
+          userId={userId}
+          productId={productId}
+          onReviewSubmitted={reload}
+        />
       ) : (
         <div>
           Please
