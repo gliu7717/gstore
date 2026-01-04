@@ -44,7 +44,7 @@ const OrderDetailsTable = ({
 }) => {
   const {
     shippingAddress,
-    orderItems,
+    orderitems,
     itemsPrice,
     shippingPrice,
     taxPrice,
@@ -179,7 +179,7 @@ const OrderDetailsTable = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orderItems.map((item) => (
+                  {orderitems.map((item) => (
                     <TableRow key={item.slug}>
                       <TableCell>
                         <Link
